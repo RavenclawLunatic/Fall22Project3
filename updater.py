@@ -1,8 +1,8 @@
 updates = []
 
-def update_all():
+def update_all(player):
     for u in updates:
-        u.update()
+        u.update(player)
 
 def register(thing):
     updates.append(thing)

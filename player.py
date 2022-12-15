@@ -1,4 +1,6 @@
 import os
+from item import Item
+import random
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -21,6 +23,9 @@ class Player:
         self.items.append(item)
         item.loc = self
         self.location.remove_item(item)
+    def drop(self, item):
+        self.items.remove(item)
+        item.put_in_room(self.location)
     def show_inventory(self):
         clear()
         print("You are currently carrying:")
@@ -29,6 +34,11 @@ class Player:
             print(i.name)
         print()
         input("Press enter to continue...")
+    def get_item_by_name(self, name):
+        for i in self.items:
+            if i.name.lower() == name.lower():
+                return i
+        return False
     def attack_monster(self, mon):
         clear()
         print("You are attacking " + mon.name)
@@ -40,6 +50,13 @@ class Player:
             self.health -= mon.health
             print("You win. Your health is now " + str(self.health) + ".")
             mon.die()
+            print(mon.name + " has somehow dropped something, despite only existing in your head.")
+            loot = random.random()
+            if loot > .5:
+                n = Item("Memory", "You not sure if this is a particularly helpful memory to have. But you have it anyway.")
+            else:
+                n = Item("Will to Live", "Oh, is that where that went? Well, you have it back now. Unfortunately, it can't fix everything on its own.")
+            n.put_in_room(self.location)
         else:
             print("You lose.")
             self.alive = False
